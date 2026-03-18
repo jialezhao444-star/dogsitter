@@ -1,5 +1,7 @@
 
-import { Column, Table ,Model} from "sequelize-typescript";
+import { Column, Table ,Model, BelongsTo, HasMany, ForeignKey} from "sequelize-typescript";
+import { Request } from "src/request/entities/request.entity";
+import { User } from "src/user/entities/user.entity";
 
 
 @Table({
@@ -21,11 +23,18 @@ age!: number;
 @Column({})
 race!: string;
 
-
 @Column({})
 image!: string;
 
+@ForeignKey(() => User)
+@Column({})
+user_id!: number;
 
+@BelongsTo(() => User)
+users: User[];
+
+@HasMany(() => Request)
+requests: Request[];
 
 
 }

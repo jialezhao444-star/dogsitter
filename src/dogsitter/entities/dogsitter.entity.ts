@@ -1,5 +1,8 @@
 
-import { Column, Table ,Model} from "sequelize-typescript";
+import { Column, Table ,Model, BelongsToMany, BelongsTo, HasMany} from "sequelize-typescript";
+import { Apply } from "src/apply/entities/apply.entity";
+import { Request } from "src/request/entities/request.entity";
+import { Review } from "src/reviews/entities/review.entity";
 
 
 @Table({
@@ -38,4 +41,11 @@ address!: string;
     allowNull: false,
 })
 phone!: string;
+
+@BelongsToMany(() => Request, () => Apply)
+requests: Request[];
+
+@HasMany(() => Review)
+reviews: Review[];
+
 }

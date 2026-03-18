@@ -1,5 +1,7 @@
 
-import { Column, Table ,Model} from "sequelize-typescript";
+import { Column, Table ,Model, HasMany} from "sequelize-typescript";
+import { Request } from "src/request/entities/request.entity";
+import { Review } from "src/reviews/entities/review.entity";
 
 
 @Table({
@@ -38,4 +40,11 @@ address!: string;
     allowNull: false,
 })
 phone!: string;
+
+@HasMany(() => Request)
+requests: Request[];
+
+@HasMany(() => Review)
+reviews: Review[];
+
 }

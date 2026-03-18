@@ -1,6 +1,7 @@
 
 
-import { Column, Table ,Model} from "sequelize-typescript";
+import { Column, Table ,Model, HasMany, ForeignKey} from "sequelize-typescript";
+import { Request } from "src/request/entities/request.entity";
 
 
 @Table({
@@ -12,27 +13,16 @@ export class Service  extends Model{
 @Column({
     allowNull: false,
 })
-type!: string;
- 
-@Column({
-    allowNull: false,
-})
-time!: number;
-
-@Column({
-    allowNull: false,
-})
-address!: string;
-
-
-@Column({
-    allowNull: false,
-})
-date!: string;
-
 
 @Column({
     allowNull: false,
 })
 price!: number;
+
+@ForeignKey(() => Request)
+@Column
+request_id!: number;
+
+@HasMany(() => Request)
+requests: Request[];
 }

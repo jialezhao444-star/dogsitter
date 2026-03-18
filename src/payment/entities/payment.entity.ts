@@ -1,5 +1,6 @@
 
-import { Column, Table ,Model} from "sequelize-typescript";
+import { Column, Table ,Model, BelongsTo, ForeignKey} from "sequelize-typescript";
+import { Service } from "src/service/entities/service.entity";
 
 
 @Table({
@@ -18,15 +19,20 @@ ammount!: string;
 
 })
 method!: string;
+
 @Column({
     allowNull: false,
 
 })
 status!: string;
+
+@ForeignKey(() => Service)
 @Column({
     allowNull: false,
-
 })
 service_id!: string;
+
+@BelongsTo(() => Service)
+service: Service;
 
 }

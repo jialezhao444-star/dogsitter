@@ -1,44 +1,44 @@
-
-import { Column, Table ,Model} from "sequelize-typescript";
-
+import { Column, Table, Model, BelongsTo, ForeignKey } from "sequelize-typescript";
+import { Dog } from "src/dog/entities/dog.entity";
+import { Service } from "src/service/entities/service.entity";
+import { User } from "src/user/entities/user.entity";
 
 @Table({
     tableName: 'requests',
     timestamps: false,
 })
-export class Request  extends Model{
+export class Request extends Model {
 
-@Column({
-    allowNull: false,
-})
-dog_id!: string;
- 
-@Column({
-    allowNull: false,
-  
-})
-user_id!: string;
-@Column({
-    allowNull: false,
-  
-})
+@ForeignKey(() => Dog)
+@Column
+dog_id!: number;
+
+@ForeignKey(() => User)
+@Column
+user_id!: number;
+
+@ForeignKey(() => Service)
+@Column
+service_id!: number;
+
+@Column
 address!: string;
 
-@Column({
-    allowNull: false,
-  
-})
+@Column
 date!: string;
 
-
-@Column({
-    allowNull: false,
-  
-})
+@Column
 time!: string;
 
+@Column
+service_type!: string;
 
+@BelongsTo(() => Dog)
+dog: Dog;
 
+@BelongsTo(() => User)
+user: User;
 
-
+@BelongsTo(() => Service)
+service: Service;
 }
