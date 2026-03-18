@@ -1,26 +1,39 @@
 import { Injectable } from '@nestjs/common';
 import { CreateServiceDto } from './dto/create-service.dto';
 import { UpdateServiceDto } from './dto/update-service.dto';
+import { InjectModel } from '@nestjs/sequelize';
+import { Service } from './entities/service.entity';
 
 @Injectable()
 export class ServiceService {
-  create(createServiceDto: CreateServiceDto) {
-    return 'This action adds a new service';
+  constructor(
+    @InjectModel(Service)
+    private serviceModel: typeof Service,
+  ) {}
+
+  async create(createServiceDto: CreateServiceDto) {
+    return await this.serviceModel.create(
+      createServiceDto as Partial<Service>,
+    );
   }
 
-  findAll() {
-    return `This action returns all service`;
+  async findAll() {
+    return await this.serviceModel.findAll();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} service`;
+  async findOne(id: number) {
+    return await this.serviceModel.findByPk(id);
   }
 
-  update(id: number, updateServiceDto: UpdateServiceDto) {
-    return `This action updates a #${id} service`;
+  async update(id: number, updateServiceDto: UpdateServiceDto) {
+    return await this.serviceModel.update(updateServiceDto, {
+      where: { id: id },
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} service`;
+  async remove(id: number) {
+    return await this.serviceModel.destroy({
+      where: { id: id },
+    });
   }
 }

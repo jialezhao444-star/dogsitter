@@ -1,5 +1,5 @@
 
-import { Column, Table ,Model, ForeignKey} from "sequelize-typescript";
+import { Column, Table, Model, ForeignKey} from "sequelize-typescript";
 import { Dogsitter } from "src/dogsitter/entities/dogsitter.entity";
 import { Request } from "src/request/entities/request.entity";
 

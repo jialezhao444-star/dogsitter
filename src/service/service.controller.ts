@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException } from '@nestjs/common';
 import { ServiceService } from './service.service';
 import { CreateServiceDto } from './dto/create-service.dto';
 import { UpdateServiceDto } from './dto/update-service.dto';
@@ -7,9 +7,16 @@ import { UpdateServiceDto } from './dto/update-service.dto';
 export class ServiceController {
   constructor(private readonly serviceService: ServiceService) {}
 
-  @Post()
-  create(@Body() createServiceDto: CreateServiceDto) {
-    return this.serviceService.create(createServiceDto);
+  @Post('/create')
+  async create(@Body() createServiceDto: CreateServiceDto) {
+    const createService = await this.serviceService.create(createServiceDto);
+    if (createService == null) {
+      throw new Error('Can not Create Data!!!')
+    }
+    return {
+      message: 'Create Data Complete',
+      data: createService,
+    };
   }
 
   @Get()
@@ -18,17 +25,36 @@ export class ServiceController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.serviceService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    const findService = await this.serviceService.findOne(+id);
+    if (findService == null) {
+      throw new NotFoundException('Not Found Dtat!!!');
+    }
+    return findService;
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateServiceDto: UpdateServiceDto) {
-    return this.serviceService.update(+id, updateServiceDto);
+  async update(
+    @Param('id') id: string, 
+    @Body() updateServiceDto: UpdateServiceDto) {
+      const [updateService] = await this.serviceService.update(
+        +id,
+        updateServiceDto,
+      );
+    console.log(updateService);
+    if (updateService === 0) {
+      throw new NotFoundException('Not Found Data to Update!!!')
+    }
+    return {message: 'Update Data Complete'};
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.serviceService.remove(+id);
+  async remove(@Param('id') id: string) {
+    const destroyService = await this.serviceService.remove(+id);
+    console.log(destroyService);
+    if (destroyService == 0) {
+      throw new NotFoundException('Not Found Data to Remove!!!');
+    }
+    return { message: 'Remove Data Complete' };
   }
 }

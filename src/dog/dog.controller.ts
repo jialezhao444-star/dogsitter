@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException } from '@nestjs/common';
 import { DogService } from './dog.service';
 import { CreateDogDto } from './dto/create-dog.dto';
 import { UpdateDogDto } from './dto/update-dog.dto';
@@ -7,9 +7,16 @@ import { UpdateDogDto } from './dto/update-dog.dto';
 export class DogController {
   constructor(private readonly dogService: DogService) {}
 
-  @Post()
-  create(@Body() createDogDto: CreateDogDto) {
-    return this.dogService.create(createDogDto);
+  @Post('/create')
+  async create(@Body() createDogDto: CreateDogDto) {
+    const createDog = await this.dogService.create(createDogDto);
+    if (createDog == null) {
+      throw new Error('Can not Create Data!!!')
+    }
+    return {
+      message: 'Create Data Complete',
+      data: createDog,
+    };
   }
 
   @Get()
@@ -18,17 +25,36 @@ export class DogController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.dogService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    const findDog = await this.dogService.findOne(+id);
+    if (findDog == null) {
+      throw new NotFoundException('Not Found Dtat!!!');
+    }
+    return findDog;
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDogDto: UpdateDogDto) {
-    return this.dogService.update(+id, updateDogDto);
+  async update(
+    @Param('id') id: string, 
+    @Body() updateDogDto: UpdateDogDto) {
+      const [updateDog] = await this.dogService.update(
+        +id,
+        updateDogDto,
+      );
+    console.log(updateDog);
+    if (updateDog === 0) {
+      throw new NotFoundException('Not Found Data to Update!!!')
+    }
+    return {message: 'Update Data Complete'};
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.dogService.remove(+id);
+  async remove(@Param('id') id: string) {
+    const destroyDog = await this.dogService.remove(+id);
+    console.log(destroyDog);
+    if (destroyDog == 0) {
+      throw new NotFoundException('Not Found Data to Remove!!!');
+    }
+    return { message: 'Remove Data Complete' };
   }
 }

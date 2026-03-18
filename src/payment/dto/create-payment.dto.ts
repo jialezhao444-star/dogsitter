@@ -1,1 +1,6 @@
-export class CreatePaymentDto {}
+export class CreatePaymentDto {
+    amount: string;
+    method: string;
+    status: string;
+    service_id: string;
+}

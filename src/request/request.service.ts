@@ -1,26 +1,39 @@
 import { Injectable } from '@nestjs/common';
 import { CreateRequestDto } from './dto/create-request.dto';
 import { UpdateRequestDto } from './dto/update-request.dto';
+import { InjectModel } from '@nestjs/sequelize';
+import { Request } from './entities/request.entity';
 
 @Injectable()
 export class RequestService {
-  create(createRequestDto: CreateRequestDto) {
-    return 'This action adds a new request';
+  constructor(
+    @InjectModel(Request)
+    private requestModel: typeof Request,
+  ) {}
+
+  async create(createRequestDto: CreateRequestDto) {
+    return await this.requestModel.create(
+      createRequestDto as Partial<Request>,
+    );
   }
 
-  findAll() {
-    return `This action returns all request`;
+  async findAll() {
+    return await this.requestModel.findAll();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} request`;
+  async findOne(id: number) {
+    return await this.requestModel.findByPk(id);
   }
 
-  update(id: number, updateRequestDto: UpdateRequestDto) {
-    return `This action updates a #${id} request`;
+  async update(id: number, updateRequestDto: UpdateRequestDto) {
+    return await this.requestModel.update(updateRequestDto, {
+      where: { id: id },
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} request`;
+  async remove(id: number) {
+    return await this.requestModel.destroy({
+      where: { id: id },
+    });
   }
 }

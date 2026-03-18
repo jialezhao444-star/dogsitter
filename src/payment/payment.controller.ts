@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException } from '@nestjs/common';
 import { PaymentService } from './payment.service';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
@@ -7,9 +7,16 @@ import { UpdatePaymentDto } from './dto/update-payment.dto';
 export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
 
-  @Post()
-  create(@Body() createPaymentDto: CreatePaymentDto) {
-    return this.paymentService.create(createPaymentDto);
+  @Post('/create')
+  async create(@Body() createPaymentDto: CreatePaymentDto) {
+    const createPayment = await this.paymentService.create(createPaymentDto);
+    if (createPayment == null) {
+      throw new Error('Can not Create Data!!!')
+    }
+    return {
+      message: 'Create Data Complete',
+      data: createPayment,
+    };
   }
 
   @Get()
@@ -18,17 +25,36 @@ export class PaymentController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.paymentService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    const findPayment = await this.paymentService.findOne(+id);
+    if (findPayment == null) {
+      throw new NotFoundException('Not Found Dtat!!!');
+    }
+    return findPayment;
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePaymentDto: UpdatePaymentDto) {
-    return this.paymentService.update(+id, updatePaymentDto);
+  async update(
+    @Param('id') id: string, 
+    @Body() updatePaymentDto: UpdatePaymentDto) {
+      const [updatePayment] = await this.paymentService.update(
+        +id,
+        updatePaymentDto,
+      );
+    console.log(updatePayment);
+    if (updatePayment === 0) {
+      throw new NotFoundException('Not Found Data to Update!!!')
+    }
+    return {message: 'Update Data Complete'};
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.paymentService.remove(+id);
+  async remove(@Param('id') id: string) {
+    const destroyPayment = await this.paymentService.remove(+id);
+    console.log(destroyPayment);
+    if (destroyPayment == 0) {
+      throw new NotFoundException('Not Found Data to Remove!!!');
+    }
+    return { message: 'Remove Data Complete' };
   }
 }

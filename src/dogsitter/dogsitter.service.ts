@@ -1,26 +1,39 @@
 import { Injectable } from '@nestjs/common';
 import { CreateDogsitterDto } from './dto/create-dogsitter.dto';
 import { UpdateDogsitterDto } from './dto/update-dogsitter.dto';
+import { InjectModel } from '@nestjs/sequelize';
+import { Dogsitter } from './entities/dogsitter.entity';
 
 @Injectable()
 export class DogsitterService {
-  create(createDogsitterDto: CreateDogsitterDto) {
-    return 'This action adds a new dogsitter';
+  constructor(
+    @InjectModel(Dogsitter)
+    private dogsitterModel: typeof Dogsitter,
+  ) {}
+
+  async create(createDogsitterDto: CreateDogsitterDto) {
+    return await this.dogsitterModel.create(
+      createDogsitterDto as Partial<Dogsitter>,
+    );
   }
 
-  findAll() {
-    return `This action returns all dogsitter`;
+  async findAll() {
+    return await this.dogsitterModel.findAll();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} dogsitter`;
+  async findOne(id: number) {
+    return await this.dogsitterModel.findByPk(id);
   }
 
-  update(id: number, updateDogsitterDto: UpdateDogsitterDto) {
-    return `This action updates a #${id} dogsitter`;
+  async update(id: number, updateDogsitterDto: UpdateDogsitterDto) {
+    return await this.dogsitterModel.update(updateDogsitterDto, {
+      where: { id: id },
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} dogsitter`;
+  async remove(id: number) {
+    return await this.dogsitterModel.destroy({
+      where: { id: id },
+    });
   }
 }

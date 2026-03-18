@@ -1,26 +1,40 @@
 import { Injectable } from '@nestjs/common';
 import { CreateApplyDto } from './dto/create-apply.dto';
 import { UpdateApplyDto } from './dto/update-apply.dto';
+import { Apply } from './entities/apply.entity';
+import { InjectModel } from '@nestjs/sequelize';
 
 @Injectable()
 export class ApplyService {
-  create(createApplyDto: CreateApplyDto) {
-    return 'This action adds a new apply';
+  constructor(
+    @InjectModel(Apply)
+    private applyModel: typeof Apply,
+  ) {}
+
+
+  async create(createApplyDto: CreateApplyDto) {
+    return await this.applyModel.create(
+      createApplyDto as Partial<Apply>,
+    );
   }
 
-  findAll() {
-    return `This action returns all apply`;
+  async findAll() {
+    return await this.applyModel.findAll();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} apply`;
+  async findOne(id: number) {
+    return await this.applyModel.findByPk(id);
   }
 
-  update(id: number, updateApplyDto: UpdateApplyDto) {
-    return `This action updates a #${id} apply`;
+  async update(id: number, updateApplyDto: UpdateApplyDto) {
+    return await this.applyModel.update(updateApplyDto, {
+      where: { id: id },
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} apply`;
+  async remove(id: number) {
+    return await this.applyModel.destroy({
+      where: { id: id },
+    });
   }
 }
