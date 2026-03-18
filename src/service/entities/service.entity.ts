@@ -21,7 +21,7 @@ price!: number;
 
 @ForeignKey(() => Request)
 @Column
-request_id!: number;
+request_id!: string;
 
 @HasMany(() => Request)
 requests: Request[];
