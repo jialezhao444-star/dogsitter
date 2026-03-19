@@ -28,7 +28,7 @@ image!: string;
 
 @ForeignKey(() => User)
 @Column({})
-user_id!: string;
+user_id!: number;
 
 @BelongsTo(() => User)
 users: User[];

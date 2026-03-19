@@ -11,15 +11,15 @@ export class Request extends Model {
 
 @ForeignKey(() => Dog)
 @Column
-dog_id!: string;
+dog_id!: number;
 
 @ForeignKey(() => User)
 @Column
-user_id!: string;
+user_id!: number;
 
 @ForeignKey(() => Service)
 @Column
-service_id!: string;
+service_id!: number;
 
 @Column
 address!: string;

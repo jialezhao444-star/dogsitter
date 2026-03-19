@@ -13,12 +13,12 @@ export class Apply  extends Model{
 @Column({
     allowNull: false,
 })
-request_id!: string;
+request_id!: number;
  
 @ForeignKey(() => Dogsitter)
 @Column({
     allowNull: false,
 })
-dogsitter_id!: string;
+dogsitter_id!: number;
 
 }

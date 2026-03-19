@@ -30,7 +30,7 @@ status!: string;
 @Column({
     allowNull: false,
 })
-service_id!: string;
+service_id!: number;
 
 @BelongsTo(() => Service)
 service: Service;

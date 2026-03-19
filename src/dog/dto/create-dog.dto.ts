@@ -3,5 +3,5 @@ export class CreateDogDto {
     age: number;
     race: string;
     image: string;
-    user_id: string; 
+    user_id: number; 
 }

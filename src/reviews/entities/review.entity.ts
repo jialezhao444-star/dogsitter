@@ -24,13 +24,13 @@ comment!: string;
 @Column({
     allowNull: false,
 })
-dogsitter_id!: string;
+dogsitter_id!: number;
 
 @ForeignKey(() => User)
 @Column({
     allowNull: false,
 })
-user_id!: string;
+user_id!: number;
 
 @BelongsTo(() => Dogsitter)
 dogsitter: Dogsitter;
