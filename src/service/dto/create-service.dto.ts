@@ -1,4 +1,5 @@
 export class CreateServiceDto {
     price: number;
-    request_id: string;
+    request_id: number;
 }
+ 

@@ -1,4 +1,4 @@
-import { Column, Table, Model, BelongsTo, ForeignKey } from "sequelize-typescript";
+import { Column, Table, Model, BelongsTo, ForeignKey, HasMany } from "sequelize-typescript";
 import { Dog } from "src/dog/entities/dog.entity";
 import { Service } from "src/service/entities/service.entity";
 import { User } from "src/user/entities/user.entity";
@@ -16,10 +16,6 @@ dog_id!: number;
 @ForeignKey(() => User)
 @Column
 user_id!: number;
-
-@ForeignKey(() => Service)
-@Column
-service_id!: number;
 
 @Column
 address!: string;
@@ -39,6 +35,6 @@ dog: Dog;
 @BelongsTo(() => User)
 user: User;
 
-@BelongsTo(() => Service)
+@HasMany(() => Service)
 service: Service;
 }

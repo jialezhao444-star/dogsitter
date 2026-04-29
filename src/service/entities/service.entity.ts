@@ -1,6 +1,6 @@
 
 
-import { Column, Table ,Model, HasMany, ForeignKey} from "sequelize-typescript";
+import { Column, Table ,Model, HasMany, ForeignKey, BelongsTo} from "sequelize-typescript";
 import { Request } from "src/request/entities/request.entity";
 
 
@@ -21,8 +21,8 @@ price!: number;
 
 @ForeignKey(() => Request)
 @Column
-request_id!: string;
+request_id!: number;
 
-@HasMany(() => Request)
+@BelongsTo(() => Request)
 requests: Request[];
 }
