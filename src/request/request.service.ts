@@ -36,4 +36,12 @@ export class RequestService {
       where: { id: id },
     });
   }
+
+  async findOpenRequests() {
+    return await this.requestModel.findAll({
+      where: {
+        status: 'open',
+      },
+    });
+  }
 }

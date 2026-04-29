@@ -19,6 +19,11 @@ export class RequestController {
     };
   }
 
+  @Get('/open')
+  findOpenRequests() {
+    return this.requestService.findOpenRequests();
+  }
+
   @Get()
   findAll() {
     return this.requestService.findAll();
