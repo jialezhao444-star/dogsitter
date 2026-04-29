@@ -11,10 +11,13 @@ export class RequestService {
     private requestModel: typeof Request,
   ) {}
 
-  async create(createRequestDto: CreateRequestDto) {
-    return await this.requestModel.create(
-      createRequestDto as Partial<Request>,
-    );
+  async create(createRequestDto: CreateRequestDto, currentUserId: number) {
+    return await this.requestModel.create({
+      ...createRequestDto,
+      user_id: currentUserId,
+      status: 'open',
+      assigned_dogsitter_id: null,
+    } as Partial<Request>);
   }
 
   async findAll() {

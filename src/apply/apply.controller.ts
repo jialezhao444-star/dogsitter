@@ -1,18 +1,25 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException, UseGuards, Req } from '@nestjs/common';
 import { ApplyService } from './apply.service';
 import { CreateApplyDto } from './dto/create-apply.dto';
 import { UpdateApplyDto } from './dto/update-apply.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('apply')
 export class ApplyController {
   constructor(private readonly applyService: ApplyService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post('/create')
-  async create(@Body() createApplyDto: CreateApplyDto) {
-    const createApply = await this.applyService.create(createApplyDto);
+  async create(@Body() createApplyDto: CreateApplyDto, @Req() req) {
+    const createApply = await this.applyService.create(
+      createApplyDto,
+      req.user.user_id,
+    );
+
     if (createApply == null) {
       throw new Error('Can not Create Data!!!')
     }
+
     return {
       message: 'Create Data Complete',
       data: createApply,

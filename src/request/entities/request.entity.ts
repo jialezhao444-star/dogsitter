@@ -50,9 +50,10 @@ service_type!: string;
 
 @ForeignKey(() => User)
 @Column({
+    type: DataType.INTEGER,
    allowNull:true,
 })
-assigned_dogsitter_id!: number;
+assigned_dogsitter_id!: number | null;
 
 @BelongsTo(() => Dog)
 dog: Dog;

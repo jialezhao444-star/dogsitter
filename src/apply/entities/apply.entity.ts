@@ -19,7 +19,7 @@ request_id!: number;
 @Column({
     allowNull: false,
 })
-user_id!: number; // dogsitter applicant
+dogsitter_id!: number;
 
 @Column({
     allowNull:false,

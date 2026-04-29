@@ -15,32 +15,33 @@ export class ApplyService {
     private requestModel: typeof Request,
   ) {}
 
-  async create(createApplyDto: CreateApplyDto) {
+  async create(createApplyDto: CreateApplyDto, currentDogsitterId: number) {
     const request = await this.requestModel.findByPk(createApplyDto.request_id);
-
+  
     if (!request) {
       throw new NotFoundException('Request not found');
     }
-
-    if (request.status !== 'open') {
+  
+    if (request.get('status') !== 'open') {
       throw new BadRequestException('This request is no longer available');
     }
-
+  
     const createApply = await this.applyModel.create({
-      ...createApplyDto,
+      request_id: createApplyDto.request_id,
+      dogsitter_id: currentDogsitterId,
       status: 'selected',
     } as Partial<Apply>);
-
+  
     await this.requestModel.update(
       {
         status: 'assigned',
-        assigned_dogsitter_id: createApplyDto.dogsitter_id,
+        assigned_dogsitter_id: currentDogsitterId,
       },
       {
         where: { id: createApplyDto.request_id },
       },
     );
-
+  
     return createApply;
   }
 
@@ -66,7 +67,7 @@ export class ApplyService {
     }
 
     const requestId = apply.request_id;
-    const dogsitterId = apply.user_id;
+    const dogsitterId = apply.dogsitter_id;
 
     const request = await this.requestModel.findByPk(requestId);
 
@@ -78,7 +79,7 @@ export class ApplyService {
       where: { id: id },
     });
 
-    if (request.assigned_dogsitter_id === dogsitterId) {
+    if (request.get('assigned_dogsitter_id') === dogsitterId) {
       await this.requestModel.update(
         {
           assigned_dogsitter_id: null,

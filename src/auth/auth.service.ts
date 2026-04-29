@@ -47,7 +47,7 @@ export class AuthService {
         //check email
         const authuser = await this.authUserModel.findOne({
             where: { email: loginDto.email },
-            attributes: ['id', 'username', 'email', 'password'],
+            attributes: ['id', 'email', 'password'],
         });
         if (!authuser) {
             throw new UnauthorizedException(

@@ -1,23 +1,30 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException, UseGuards, Req } from '@nestjs/common';
 import { RequestService } from './request.service';
 import { CreateRequestDto } from './dto/create-request.dto';
 import { UpdateRequestDto } from './dto/update-request.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('request')
 export class RequestController {
   constructor(private readonly requestService: RequestService) {}
 
-  @Post('/create')
-  async create(@Body() createRequestDto: CreateRequestDto) {
-    const createRequest = await this.requestService.create(createRequestDto);
-    if (createRequest == null) {
-      throw new Error('Can not Create Data!!!')
-    }
-    return {
-      message: 'Create Data Complete',
-      data: createRequest,
-    };
+  @UseGuards(JwtAuthGuard)
+@Post('/create')
+async create(@Body() createRequestDto: CreateRequestDto, @Req() req) {
+  const createRequest = await this.requestService.create(
+    createRequestDto,
+    req.user.user_id,
+  );
+
+  if (createRequest == null) {
+    throw new Error('Can not Create Data!!!')
   }
+
+  return {
+    message: 'Create Data Complete',
+    data: createRequest,
+  };
+}
 
   @Get('/open')
   findOpenRequests() {
