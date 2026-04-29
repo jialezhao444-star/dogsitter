@@ -9,7 +9,6 @@ import { RequestModule } from './request/request.module';
 import { ApplyModule } from './apply/apply.module';
 import { PaymentModule } from './payment/payment.module';
 import { ReviewsModule } from './reviews/reviews.module';
-import { config } from 'process';
 import { ConfigModule } from '@nestjs/config';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from './user/entities/user.entity';
@@ -19,7 +18,6 @@ import { Service } from './service/entities/service.entity';
 import { Request } from './request/entities/request.entity';
 import { Apply } from './apply/entities/apply.entity';
 import { Payment } from './payment/entities/payment.entity';
-import { request } from 'https';
 import { Review } from './reviews/entities/review.entity';
 
 
