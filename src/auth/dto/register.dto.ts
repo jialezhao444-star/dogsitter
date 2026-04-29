@@ -13,6 +13,9 @@ export class RegisterDto {
     @IsNotEmpty({ message: 'phone number required!!!' })
     phone: string;
 
+    @IsNotEmpty({ message: 'role required!!!' })
+    role: string;
+
     @IsNotEmpty({ message: 'email required!!!' })
     @IsEmail({}, { message: 'The email format is incorrect.' })
     email: string;
