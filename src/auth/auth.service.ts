@@ -43,34 +43,41 @@ export class AuthService {
         return newUser;
     }
 
-    async login(loginDto: LoginDto){
-        //check email
+    async login(loginDto: LoginDto) {
         const authuser = await this.authUserModel.findOne({
             where: { email: loginDto.email },
-            attributes: ['id', 'email', 'password'],
         });
+    
         if (!authuser) {
             throw new UnauthorizedException(
-                // The HTTP response status code will be 401
-                'This email does not exist. Please try again.'
+                'This email does not exist. Please try again.',
             );
         }
-
-        // compare password (data string, encrypt string)
-        const isValid = await compare(loginDto.password, authuser.dataValues.password);
-        if ( !isValid ) {
-            throw new UnauthorizedException("error password!!!")
+    
+        const isValid = await compare(
+            loginDto.password,
+            authuser.password,
+        );
+    
+        if (!isValid) {
+            throw new UnauthorizedException('error password!!!');
         }
-
-        // generate JWT token
-        // payload payload constains the claims or the data being transferred (id)
+    
         const payload = { user_id: authuser.id };
-        const token = await this.jwtService.signAsync( payload, {
-            secret: process.env.JWT_SECRET_KEY
+    
+        const token = await this.jwtService.signAsync(payload, {
+            secret: process.env.JWT_SECRET_KEY,
         });
-
-        //return token
-        return { access_token: token };
+    
+        return {
+            access_token: token,
+            user: {
+                id: authuser.id,
+                name: authuser.name,
+                email: authuser.email,
+                role: authuser.role,
+            },
+        };
     }
 
     async getUserProfile(id: number) {

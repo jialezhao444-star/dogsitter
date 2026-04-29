@@ -1,7 +1,6 @@
 import { Column, Table, Model, BelongsTo, ForeignKey, HasMany, DataType } from "sequelize-typescript";
 import { Apply } from "src/apply/entities/apply.entity";
 import { User } from "src/auth/entities/auth.entity";
-import { Dog } from "src/dog/entities/dog.entity";
 import { Service } from "src/service/entities/service.entity";
 
 @Table({
@@ -10,15 +9,36 @@ import { Service } from "src/service/entities/service.entity";
 })
 export class Request extends Model {
 
-@ForeignKey(() => Dog)
-@Column
-dog_id!: number;
-
 @ForeignKey(() => User)
-@Column
+@Column({
+    allowNull: false,
+})
 user_id!: number;
 
-@Column
+@Column({
+    allowNull: false,
+})
+dog_name!: string;
+
+@Column({
+    allowNull: false,
+})
+dog_age!: string;
+
+@Column({
+    allowNull: false,
+})
+dog_race!: string;
+
+@Column({
+    type: DataType.TEXT,
+    allowNull: true,
+})
+dog_image!: string;
+
+@Column({
+    allowNull: false,
+})
 address!: string;
 
 @Column({
@@ -33,7 +53,7 @@ date!: string;
 })
 start_time!: string;
 
-@Column({ 
+@Column({
     type: DataType.TIME,
     allowNull: false,
 })
@@ -42,21 +62,20 @@ end_time!: string;
 @Column({
     allowNull:false,
     defaultValue:'open'
- })
- status!: string;
+})
+status!: string;
 
-@Column
+@Column({
+    allowNull:false,
+})
 service_type!: string;
 
 @ForeignKey(() => User)
 @Column({
     type: DataType.INTEGER,
-   allowNull:true,
+    allowNull:true,
 })
 assigned_dogsitter_id!: number | null;
-
-@BelongsTo(() => Dog)
-dog: Dog;
 
 @BelongsTo(() => User, 'user_id')
 owner: User;

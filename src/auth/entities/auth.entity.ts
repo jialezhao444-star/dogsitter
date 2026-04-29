@@ -2,7 +2,6 @@
 import { Column, Table ,Model, BelongsToMany, BelongsTo, HasMany, DataType} from "sequelize-typescript";
 import { Request } from "src/request/entities/request.entity";
 import { Review } from "src/reviews/entities/review.entity";
-import { Dog } from "src/dog/entities/dog.entity";
 import { Apply } from "src/apply/entities/apply.entity";
 import { Service } from "src/service/entities/service.entity";
 
@@ -53,9 +52,6 @@ phone!: string;
     defaultValue: 'owner',
 })
 role!: string; // owner | dogsitter | admin
-
-@HasMany(() => Dog)
-dogs: Dog[];
 
 @HasMany(() => Request)
 requests: Request[];

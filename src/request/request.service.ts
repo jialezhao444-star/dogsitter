@@ -1,17 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { CreateRequestDto } from './dto/create-request.dto';
 import { UpdateRequestDto } from './dto/update-request.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { Request } from './entities/request.entity';
+import { CreateFullRequestDto } from './dto/create-full-request.dto';
 
 @Injectable()
 export class RequestService {
   constructor(
     @InjectModel(Request)
-    private requestModel: typeof Request,
+    private requestModel: typeof Request
   ) {}
 
-  async create(createRequestDto: CreateRequestDto, currentUserId: number) {
+  async create(createRequestDto: CreateFullRequestDto, currentUserId: number) {
     return await this.requestModel.create({
       ...createRequestDto,
       user_id: currentUserId,

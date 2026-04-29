@@ -17,7 +17,7 @@ export class ApplyController {
     );
 
     if (createApply == null) {
-      throw new Error('Can not Create Data!!!')
+      throw new Error('Can not Create Data!!!');
     }
 
     return {
