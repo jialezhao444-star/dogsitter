@@ -3,6 +3,9 @@ export class CreateRequestDto {
     user_id: number;
     address: string;
     date: string;
-    time: string;
+    start_time: string;
+    end_time: string;
+    status: string;
     service_type: string;
+    assigned_dogsitter_id: number;
 }

@@ -1,14 +1,12 @@
-
-import { Column, Table ,Model, BelongsTo, ForeignKey, HasMany} from "sequelize-typescript";
-import { Dogsitter } from "src/dogsitter/entities/dogsitter.entity";
-import { User } from "src/user/entities/user.entity";
-
+import { Column, Table ,Model, BelongsTo, ForeignKey} from "sequelize-typescript";
+import { User } from "src/auth/entities/auth.entity";
+import { Service } from "src/service/entities/service.entity";
 
 @Table({
     tableName: 'reviews',
-    timestamps: false,
+    timestamps: true,
 })
-export class Review extends Model{
+export class Review extends Model {
 
 @Column({
     allowNull: false,
@@ -20,7 +18,7 @@ score!: number;
 })
 comment!: string;
 
-@ForeignKey(() => Dogsitter)
+@ForeignKey(() => User)
 @Column({
     allowNull: false,
 })
@@ -32,10 +30,18 @@ dogsitter_id!: number;
 })
 user_id!: number;
 
-@BelongsTo(() => Dogsitter)
-dogsitter: Dogsitter;
+@ForeignKey(() => Service)
+@Column({
+    allowNull:false,
+})
+service_id!: number;
 
-@BelongsTo(() => User)
-users: User;
+@BelongsTo(() => User, 'dogsitter_id')
+dogsitter: User;
 
+@BelongsTo(() => User, 'user_id')
+user: User;
+
+@BelongsTo(() => Service)
+service: Service;
 }

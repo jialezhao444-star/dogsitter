@@ -1,6 +1,6 @@
 
 import { Column, Table, Model, ForeignKey} from "sequelize-typescript";
-import { Dogsitter } from "src/dogsitter/entities/dogsitter.entity";
+import { User } from "src/auth/entities/auth.entity";
 import { Request } from "src/request/entities/request.entity";
 
 
@@ -15,10 +15,16 @@ export class Apply  extends Model{
 })
 request_id!: number;
  
-@ForeignKey(() => Dogsitter)
+@ForeignKey(() => User)
 @Column({
     allowNull: false,
 })
-dogsitter_id!: number;
+user_id!: number; // dogsitter applicant
+
+@Column({
+    allowNull:false,
+    defaultValue:'applied',
+})
+status!: string;
 
 }

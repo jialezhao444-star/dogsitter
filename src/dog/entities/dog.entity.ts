@@ -1,40 +1,36 @@
-
 import { Column, Table ,Model, BelongsTo, HasMany, ForeignKey} from "sequelize-typescript";
+import { User } from "src/auth/entities/auth.entity";
 import { Request } from "src/request/entities/request.entity";
-import { User } from "src/user/entities/user.entity";
-
 
 @Table({
     tableName: 'dogs',
     timestamps: false,
 })
-export class Dog  extends Model{
+export class Dog extends Model {
 
 @Column({
     allowNull: false,
 })
 name!: string;
- 
-@Column({
-    allowNull: false,
-})
-age!: number;
 
-@Column({})
+@Column({
+    allowNull: false, 
+})
+age!: string;
+
+@Column
 race!: string;
 
-@Column({})
+@Column
 image!: string;
 
 @ForeignKey(() => User)
-@Column({})
+@Column({ allowNull:false })
 user_id!: number;
 
 @BelongsTo(() => User)
-users: User[];
+user: User;
 
 @HasMany(() => Request)
 requests: Request[];
-
-
 }
