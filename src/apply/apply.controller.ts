@@ -26,6 +26,12 @@ export class ApplyController {
     };
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('/my-applications')
+  findMyApplications(@Req() req) {
+    return this.applyService.findMyApplications(req.user.user_id);
+  }
+
   @Get()
   findAll() {
     return this.applyService.findAll();
@@ -55,13 +61,15 @@ export class ApplyController {
     return {message: 'Update Data Complete'};
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  async remove(@Param('id') id: string) {
-    const destroyApply = await this.applyService.remove(+id);
-    console.log(destroyApply);
+  async remove(@Param('id') id: string, @Req() req) {
+    const destroyApply = await this.applyService.remove(+id, req.user.user_id);
+
     if (destroyApply == 0) {
       throw new NotFoundException('Not Found Data to Remove!!!');
     }
+
     return { message: 'Remove Data Complete' };
   }
 }

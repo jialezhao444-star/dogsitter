@@ -39,6 +39,7 @@ export class AuthService {
             phone: registerDto.phone,
             email: registerDto.email,
             password: hashPassword,
+            role: registerDto.role,
         });
         return newUser;
     }
@@ -46,21 +47,24 @@ export class AuthService {
     async login(loginDto: LoginDto) {
         const authuser = await this.authUserModel.findOne({
             where: { email: loginDto.email },
+            attributes: ['id', 'email', 'password', 'role'],
         });
-    
+          
         if (!authuser) {
-            throw new UnauthorizedException(
-                'This email does not exist. Please try again.',
-            );
+            throw new UnauthorizedException('This email does not exist.');
         }
-    
-        const isValid = await compare(
-            loginDto.password,
-            authuser.password,
-        );
-    
+
+        console.log('LOGIN DTO:', loginDto);
+        console.log('USER FROM DB:', authuser?.toJSON());
+
+        if (!loginDto.password || !authuser.password) {
+            throw new BadRequestException('Missing password data');
+          }
+          
+        const isValid = await compare(loginDto.password, authuser.password);
+          
         if (!isValid) {
-            throw new UnauthorizedException('error password!!!');
+          throw new UnauthorizedException('Wrong password');
         }
     
         const payload = { user_id: authuser.id };
@@ -82,7 +86,7 @@ export class AuthService {
 
     async getUserProfile(id: number) {
         return await this.authUserModel.findByPk(id, {
-            attributes: ['id', 'username', 'email'],
+            attributes: ['id', 'username', 'email', 'role'],
         });
     }
 

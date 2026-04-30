@@ -45,6 +45,15 @@ export class ApplyService {
     return createApply;
   }
 
+  async findMyApplications(currentDogsitterId: number) {
+  return await this.applyModel.findAll({
+    where: {
+      dogsitter_id: currentDogsitterId,
+    },
+    order: [['id', 'DESC']],
+  });
+}
+
   async findAll() {
     return await this.applyModel.findAll();
   }
@@ -59,27 +68,31 @@ export class ApplyService {
     });
   }
 
-  async remove(id: number) {
-    const apply = await this.applyModel.findByPk(id);
-
+  async remove(id: number, currentDogsitterId: number) {
+    const apply = await this.applyModel.findOne({
+      where: {
+        id: id,
+        dogsitter_id: currentDogsitterId,
+      },
+    });
+  
     if (!apply) {
       throw new NotFoundException('Application not found');
     }
-
+  
     const requestId = apply.request_id;
-    const dogsitterId = apply.dogsitter_id;
-
+  
     const request = await this.requestModel.findByPk(requestId);
-
-    if (!request) {
-      throw new NotFoundException('Request not found');
-    }
-
+  
     await this.applyModel.destroy({
-      where: { id: id },
+      where: {
+        id: id,
+        dogsitter_id: currentDogsitterId,
+      },
     });
-
-    if (request.get('assigned_dogsitter_id') === dogsitterId) {
+  
+    // FORCE SAME TYPE BEFORE COMPARISON
+    if (request && Number(request.assigned_dogsitter_id) === Number(currentDogsitterId)) {
       await this.requestModel.update(
         {
           assigned_dogsitter_id: null,
@@ -90,7 +103,7 @@ export class ApplyService {
         },
       );
     }
-
+  
     return 1;
   }
 }

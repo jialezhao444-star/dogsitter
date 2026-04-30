@@ -23,7 +23,7 @@ name!: string;
     allowNull: false,
     unique : true,
 })
-email!: string;
+declare email: string;
 
 @Column({
     type: DataType.STRING(200),
@@ -35,7 +35,7 @@ lastname!: string;
     type: DataType.TEXT,
     allowNull: false,
 })
-password!: string;
+declare password: string;
 
 @Column({
     allowNull: false,
@@ -48,10 +48,11 @@ address!: string;
 phone!: string;
 
 @Column({
+    type: DataType.STRING,
     allowNull: false,
     defaultValue: 'owner',
 })
-role!: string; // owner | dogsitter | admin
+declare role: string; // owner | dogsitter | admin
 
 @HasMany(() => Request)
 requests: Request[];

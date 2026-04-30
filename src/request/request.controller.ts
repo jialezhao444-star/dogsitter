@@ -1,8 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException, UseGuards, Req } from '@nestjs/common';
-import { RequestService } from './request.service';
-import { UpdateRequestDto } from './dto/update-request.dto';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { CreateFullRequestDto } from './dto/create-full-request.dto';
+import { Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post, Req, UseGuards } from "@nestjs/common";
+import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
+import { UpdateRequestDto } from "./dto/update-request.dto";
+import { RequestService } from "./request.service";
+import { CreateFullRequestDto } from "./dto/create-full-request.dto";
 
 @Controller('request')
 export class RequestController {
@@ -16,10 +16,6 @@ export class RequestController {
       req.user.user_id,
     );
 
-    if (createRequest == null) {
-      throw new Error('Can not Create Data!!!')
-    }
-
     return {
       message: 'Create Data Complete',
       data: createRequest,
@@ -31,42 +27,65 @@ export class RequestController {
     return this.requestService.findOpenRequests();
   }
 
+  // ✅ MUST BE BEFORE :id
+  @UseGuards(JwtAuthGuard)
+  @Get('/my-requests')
+  findMyRequests(@Req() req) {
+    return this.requestService.findMyRequests(req.user.user_id);
+  }
+
   @Get()
   findAll() {
     return this.requestService.findAll();
   }
 
+  // ✅ PARAM ROUTE ALWAYS LAST
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    const findRequest = await this.requestService.findOne(+id);
-    if (findRequest == null) {
-      throw new NotFoundException('Not Found Dtat!!!');
+    const numericId = Number(id);
+
+    if (isNaN(numericId)) {
+      throw new NotFoundException('Invalid request id');
     }
+
+    const findRequest = await this.requestService.findOne(numericId);
+
+    if (!findRequest) {
+      throw new NotFoundException('Request not found');
+    }
+
     return findRequest;
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   async update(
-    @Param('id') id: string, 
-    @Body() updateRequestDto: UpdateRequestDto) {
-      const [updateRequest] = await this.requestService.update(
-        +id,
-        updateRequestDto,
-      );
-    console.log(updateRequest);
+    @Param('id') id: string,
+    @Body() updateRequestDto: UpdateRequestDto,
+    @Req() req,
+  ) {
+    const [updateRequest] = await this.requestService.update(
+      +id,
+      updateRequestDto,
+      req.user.user_id,
+    );
+
     if (updateRequest === 0) {
-      throw new NotFoundException('Not Found Data to Update!!!')
+      throw new NotFoundException('Not Found Data to Update!!!');
     }
-    return {message: 'Update Data Complete'};
+
+    return { message: 'Update Data Complete' };
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  async remove(@Param('id') id: string) {
-    const destroyRequest = await this.requestService.remove(+id);
-    console.log(destroyRequest);
-    if (destroyRequest == 0) {
+  async remove(@Param('id') id: string, @Req() req) {
+    const destroyRequest = await this.requestService.remove(+id, req.user.user_id);
+
+    if (destroyRequest === 0) {
       throw new NotFoundException('Not Found Data to Remove!!!');
     }
+
     return { message: 'Remove Data Complete' };
   }
-} 
+}

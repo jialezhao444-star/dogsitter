@@ -12,12 +12,19 @@ export class RequestService {
   ) {}
 
   async create(createRequestDto: CreateFullRequestDto, currentUserId: number) {
-    return await this.requestModel.create({
+    console.log("DTO RECEIVED:", createRequestDto);
+    console.log("USER ID:", currentUserId);
+  
+    const created = await this.requestModel.create({
       ...createRequestDto,
       user_id: currentUserId,
       status: 'open',
       assigned_dogsitter_id: null,
-    } as Partial<Request>);
+    });
+  
+    console.log("CREATED REQUEST:", created.toJSON());
+  
+    return created;
   }
 
   async findAll() {
@@ -28,15 +35,30 @@ export class RequestService {
     return await this.requestModel.findByPk(id);
   }
 
-  async update(id: number, updateRequestDto: UpdateRequestDto) {
-    return await this.requestModel.update(updateRequestDto, {
-      where: { id: id },
+  async findMyRequests(currentUserId: number) {
+    return await this.requestModel.findAll({
+      where: {
+        user_id: currentUserId,
+      },
+      order: [['id', 'DESC']],
     });
   }
 
-  async remove(id: number) {
+  async update(id: number, updateRequestDto: UpdateRequestDto, currentUserId: number) {
+    return await this.requestModel.update(updateRequestDto, {
+      where: {
+        id: id,
+        user_id: currentUserId,
+      },
+    });
+  }
+
+  async remove(id: number, currentUserId: number) {
     return await this.requestModel.destroy({
-      where: { id: id },
+      where: {
+        id: id,
+        user_id: currentUserId,
+      },
     });
   }
 
